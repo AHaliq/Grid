@@ -1,5 +1,5 @@
-const eqArr = (xs, ys) =>
-  xs.map((x,i) => x === ys[i]).reduce((a,v) => a && v, true);
+const almostEqArr = (xs, ys) =>
+  xs.map((x,i) => x === 0 || ys[i] === 0 || x === ys[i]).reduce((a,v) => a && v, true);
 
 const randomArrEle = xs => xs[Math.floor(Math.random() * xs.length)];
 
