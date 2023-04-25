@@ -1,13 +1,28 @@
-function algo(grid) {
-  // calc type amount per row if not computed
-  // if any type 5 fill remaining
-  // for each row apply
-    // rule 1 ..
-    // rule 2 ._.
-  // transpose and repeat
-  // transpose back
-  // if no change means stuck
-  console.log("slv");
+
+const compareFull = grid => {
+  while (compareOnce(grid)) {}
+  return grid;
+}
+
+const compareOnce = grid => {
+  for(let i = 0; i < grid.length - 1; i++) {
+    for(let j = i + 1; j < grid.length; j++) {
+      if(!almostEqArr(grid[i], grid[j]))
+        continue;
+      const [s1, s2] = [i,j].map(z => grid[z].filter(x => x === 0).length);
+      if(s1 + s2 !== 2)
+        continue;
+      const [t,s] = s1 === 2 ? [i,j]: [j,i];
+      const es = grid[t].reduce((xs,x,i) => x === 0 ? [...xs, i] : xs, []);
+      grid[t][es[0]] = grid[s][es[1]];
+      grid[t][es[1]] = grid[s][es[0]];
+      return true;
+    }
+  }
+  return false;
+}
+
+const algo = grid => {
   let gridn = oneStep(grid);
   while(!eqGrid(gridn, grid)) {
     grid = gridn;
@@ -15,8 +30,7 @@ function algo(grid) {
   }
   return gridn;
 }
-
-const oneStep = grid => transpose(applyRule(transpose(applyRule(grid))));
+const oneStep = grid => transpose(compareFull(applyRule(transpose(compareFull(applyRule(grid))))));
 
 const transpose = matrix =>
   matrix[0].map((_, columnIndex) => 
@@ -25,11 +39,13 @@ const transpose = matrix =>
 const applyRule = grid => 
   grid.map(xs => {
     xs = xs.reduce(rule0, xs);
+    // apply rules
     const mx = xs.length / 2;
     if(xs.filter(x => x === 1).length === mx)
       return xs.map(x => x === 0 ? 2 : x);
     if(xs.filter(x => x === 2).length === mx)
       return xs.map(x => x === 0 ? 1 : x);
+    // count n/2
     return xs;
   });
 
